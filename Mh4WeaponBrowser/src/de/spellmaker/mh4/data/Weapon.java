@@ -1,3 +1,4 @@
+package de.spellmaker.mh4.data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -62,6 +63,10 @@ public class Weapon {
 	public String getLink() {
 		return link;
 	}
+	
+	public int getRankId(){
+		return rankId;
+	}
 
 	private int id;
 	private int weapontype_id;
@@ -78,6 +83,7 @@ public class Weapon {
 	private String local_name;
 	private String local_description;
 	private String link;
+	private int rankId;
 	
 	private boolean dummy;
 	
@@ -105,6 +111,7 @@ public class Weapon {
 		local_name = source.getString(13);
 		local_description = source.getString(14);
 		link = source.getString(15);
+		rankId = source.getInt(16);
 		dummy = false;
 	}
 }

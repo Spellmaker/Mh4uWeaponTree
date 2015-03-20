@@ -1,3 +1,4 @@
+package de.spellmaker.mh4.tree;
 import org.abego.treelayout.NodeExtentProvider;
 
 public class TextInBoxNodeExtentProvider implements
