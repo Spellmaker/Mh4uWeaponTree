@@ -5,7 +5,6 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,12 +14,15 @@ import java.net.URI;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import de.spellmaker.mh4.data.CraftData;
 import de.spellmaker.mh4.data.Item;
+import de.spellmaker.mh4.data.Weapon;
 import de.spellmaker.mh4.data.WeaponManager;
+import de.spellmaker.mh4.treeview.Mh4NodeDesigner;
 
 @SuppressWarnings("serial")
 public class CraftPanel extends JPanel implements ActionListener, MouseListener {
@@ -32,7 +34,10 @@ public class CraftPanel extends JPanel implements ActionListener, MouseListener 
 	private JButton[] right;
 	private JLabel[] neededItems;
 	private WeaponManager manager;
+	private Mh4NodeDesigner designer;
+	private CraftData data;
 	private JButton build;
+	private JComponent parent;
 	
 	private Item[] items;
 	
@@ -41,10 +46,12 @@ public class CraftPanel extends JPanel implements ActionListener, MouseListener 
 		return new Dimension(getWidth(), 100);
 	}
 	
-	public CraftPanel(String title, WeaponManager manager){
+	public CraftPanel(String title, WeaponManager manager, Mh4NodeDesigner designer, JComponent parent){
 		this.manager = manager;
 		this.setBorder(BorderFactory.createEtchedBorder());
 		this.setLayout(new BorderLayout());
+		this.designer = designer;
+		this.parent = parent;
 		
 		this.title = new JLabel(title);
 		this.add(this.title, BorderLayout.NORTH);
@@ -114,6 +121,7 @@ public class CraftPanel extends JPanel implements ActionListener, MouseListener 
 	}
 	
 	public void setSource(CraftData cd){
+		this.data = cd;
 		wipe();
 		if(cd != null){
 			for(int i = 0; i < 4; i++){
@@ -157,6 +165,23 @@ public class CraftPanel extends JPanel implements ActionListener, MouseListener 
 					myItems[i].setText("" + amt);
 				}
 			}
+			Weapon currentWeapon = manager.getWeapon(data.weaponId);
+			if(currentWeapon.getWeapon_parent_id() > 0){
+				Weapon prevWeapon = manager.getWeapon(currentWeapon.getWeapon_parent_id());
+				try{
+					designer.removeEntry(prevWeapon.getLocal_name());
+				}
+				catch(Exception exc){
+					System.out.println("error saving to save.txt");
+				}
+			}
+			try{
+				designer.addEntry(currentWeapon.getLocal_name());
+			}
+			catch(Exception exc){
+				System.out.println("error saving to save.txt");
+			}
+			parent.repaint();
 		}
 		else
 		for(int i = 0; i < 4; i++){
@@ -166,7 +191,6 @@ public class CraftPanel extends JPanel implements ActionListener, MouseListener 
 					amt = (int) Math.max(0, amt - 1);
 					manager.setItemAmount(items[i].id, amt);
 					myItems[i].setText("" + amt);
-					System.out.println("new amount is: " + amt);
 				}
 				break;
 			}
@@ -176,7 +200,6 @@ public class CraftPanel extends JPanel implements ActionListener, MouseListener 
 					amt += 1;
 					manager.setItemAmount(items[i].id, amt);
 					myItems[i].setText("" + amt);
-					System.out.println("new amount is: " + amt);
 				}
 				break;
 			}

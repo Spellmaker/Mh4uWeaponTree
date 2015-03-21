@@ -83,6 +83,8 @@ public class TreeViewPane<N> extends JComponent implements MouseListener, MouseM
 		this.tree = tree;
 		this.selected = null;
 		this.viewport = new Point(0, 0);
+		ElementSelectedEvent<N> event = new ElementSelectedEvent<N>(MouseEvent.BUTTON1, null);
+		for(ElementSelectedListener<N> l : listeners) l.elementSelected(event);
 		repaint();
 	}
 	

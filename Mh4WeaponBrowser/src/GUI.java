@@ -11,12 +11,9 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-import javax.swing.border.BevelBorder;
-
 import de.spellmaker.mh4.data.WeaponManager;
 import de.spellmaker.mh4.itemview.ItemView;
 import de.spellmaker.mh4.tree.TextInBox;
@@ -50,7 +47,7 @@ public class GUI extends JFrame {
 		manager.loadAllWeapons();
         treePane = new TreeViewPane<>();
         Mh4NodeDesigner designer = new Mh4NodeDesigner("save.txt");
-        ItemView infoPanel = new ItemView(manager);
+        ItemView infoPanel = new ItemView(manager, designer, treePane);
         treePane.setNodeDesigner(designer);
         model = new TreeDataModel(manager, treePane, designer, infoPanel);
         treePane.setTree(manager.getTree());

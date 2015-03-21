@@ -1,21 +1,17 @@
 package de.spellmaker.mh4.itemview;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.border.BevelBorder;
 
 import de.spellmaker.mh4.data.CraftData;
-import de.spellmaker.mh4.data.Item;
 import de.spellmaker.mh4.data.Weapon;
 import de.spellmaker.mh4.data.WeaponManager;
+import de.spellmaker.mh4.treeview.Mh4NodeDesigner;
 
 @SuppressWarnings("serial")
 public class ItemView extends JPanel {
@@ -25,12 +21,12 @@ public class ItemView extends JPanel {
 	private CraftPanel create;
 	private CraftPanel upgrade;
 	
-	public ItemView(WeaponManager manager){ 
+	public ItemView(WeaponManager manager, Mh4NodeDesigner designer, JComponent parent){ 
         setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         this.manager = manager;
         this.selected = null;
-        create = new CraftPanel("Create", manager);
-        upgrade = new CraftPanel("Upgrade", manager);
+        create = new CraftPanel("Create", manager, designer, parent);
+        upgrade = new CraftPanel("Upgrade", manager, designer, parent);
         this.add(create);
         this.add(upgrade);
         this.add(new JPanel());
@@ -44,7 +40,6 @@ public class ItemView extends JPanel {
 	
 	public void setSelected(Weapon w){
 		this.selected = w;
-		//this.removeAll();
 		if(w == null){
 			create.setSource(null);
 			upgrade.setSource(null);
@@ -56,35 +51,5 @@ public class ItemView extends JPanel {
 			this.upgrade.setSource(upgrade);
 		}
 		repaint();
-		
-		
-		/*if(w == null){
-			txtText.setText("");
-		}
-		else{
-			CraftData create = manager.getCreateCraftData(selected.getId());
-			CraftData upgrade = manager.getUpgradeCraftData(selected.getId());
-			String txt = "Create:\n";
-			txt += build(create);
-			txt += "\n";
-			txt += "Upgrade:\n";
-			txt += build(upgrade);
-			txtText.setText(txt);
-			repaint();
-		}*/
-	}
-	
-	private String build(CraftData craft){
-		String txt = "";
-		if(craft == null) txt += "-\n";
-		else{
-			for(Item i : craft.items){
-				if(i == null) txt += "-\n";
-				else{
-					txt += i.name + " x " + i.quantity + "\n";
-				}
-			}
-		}
-		return txt;
 	}
 }
