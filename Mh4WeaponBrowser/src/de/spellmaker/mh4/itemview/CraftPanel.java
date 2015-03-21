@@ -166,7 +166,7 @@ public class CraftPanel extends JPanel implements ActionListener, MouseListener 
 				}
 			}
 			Weapon currentWeapon = manager.getWeapon(data.weaponId);
-			if(currentWeapon.getWeapon_parent_id() > 0){
+			if(currentWeapon.getWeapon_parent_id() > 0 && this.title.getText().equals("Upgrade")){
 				Weapon prevWeapon = manager.getWeapon(currentWeapon.getWeapon_parent_id());
 				try{
 					designer.removeEntry(prevWeapon.getLocal_name());
