@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project Mh4WeaponBrowser with libraries in sub-folder">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="C:/Users/Spellmaker/Desktop/Mh4WeaponManager.jar">
+            <manifest>
+                <attribute name="Main-Class" value="WeaponBrowserMain"/>
+                <attribute name="Class-Path" value=". Mh4WeaponManager_lib/jgraph-5.13.0.0.jar Mh4WeaponManager_lib/sqlite-jdbc-3.8.7.jar Mh4WeaponManager_lib/jgrapht-core-0.9.0.jar Mh4WeaponManager_lib/org.abego.treelayout.core.jar"/>
+            </manifest>
+            <fileset dir="C:/Users/Spellmaker/git/Mh4uWeaponTree/Mh4WeaponBrowser/bin"/>
+        </jar>
+        <delete dir="C:/Users/Spellmaker/Desktop/Mh4WeaponManager_lib"/>
+        <mkdir dir="C:/Users/Spellmaker/Desktop/Mh4WeaponManager_lib"/>
+        <copy file="C:/Users/Spellmaker/git/Mh4uWeaponTree/Mh4WeaponBrowser/lib/jgraph-5.13.0.0.jar" todir="C:/Users/Spellmaker/Desktop/Mh4WeaponManager_lib"/>
+        <copy file="C:/Users/Spellmaker/git/Mh4uWeaponTree/Mh4WeaponBrowser/lib/sqlite-jdbc-3.8.7.jar" todir="C:/Users/Spellmaker/Desktop/Mh4WeaponManager_lib"/>
+        <copy file="C:/Users/Spellmaker/git/Mh4uWeaponTree/Mh4WeaponBrowser/lib/jgrapht-core-0.9.0.jar" todir="C:/Users/Spellmaker/Desktop/Mh4WeaponManager_lib"/>
+        <copy file="C:/Users/Spellmaker/git/Mh4uWeaponTree/Mh4WeaponBrowser/lib/org.abego.treelayout.core.jar" todir="C:/Users/Spellmaker/Desktop/Mh4WeaponManager_lib"/>
+    </target>
+</project>

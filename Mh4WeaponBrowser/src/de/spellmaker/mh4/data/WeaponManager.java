@@ -37,7 +37,7 @@ public class WeaponManager {
 		weaponCreate = new HashMap<>();
 		weaponUpgrade = new HashMap<>();
 		
-		Statement s = sConn.createStatement();
+		Statement s = dConn.createStatement();
 		ResultSet types = s.executeQuery("SELECT id, local_name FROM WeaponType");
 		weaponTypes = new ArrayList<String>();
 		while(types.next()){
@@ -77,7 +77,7 @@ public class WeaponManager {
 		s.close();
 		//load crafts
 		s = dConn.createStatement();
-		query = "SELECT ItemWeaponPivot.weapon_id, Items.id, Items.rarity, Items.local_name, ItemWeaponPivot.weaponcrafttype_id, ItemWeaponPivot.quantity FROM Items JOIN ItemWeaponPivot ON Items.id = ItemWeaponPivot.item_id ORDER BY ItemweaponPivot.weapon_id, ItemweaponPivot.weaponcrafttype_id";
+		query = "SELECT ItemWeaponPivot.weapon_id, Items.id, Items.rarity, Items.local_name, ItemWeaponPivot.weaponcrafttype_id, ItemWeaponPivot.quantity, Items.link FROM Items JOIN ItemWeaponPivot ON Items.id = ItemWeaponPivot.item_id ORDER BY ItemweaponPivot.weapon_id, ItemweaponPivot.weaponcrafttype_id";
 		ResultSet allCrafts = s.executeQuery(query);
 		while(!allCrafts.isAfterLast()){
 			int id = allCrafts.getInt(1);
@@ -111,7 +111,7 @@ public class WeaponManager {
 	public void setItemAmount(int id, int amount){
 		try{
 			Statement s = sConn.createStatement();
-			s.executeUpdate("INSERT OR REPLACE INTO Items (id, amount) VALUES (2, 4)");
+			s.executeUpdate("INSERT OR REPLACE INTO Items (id, amount) VALUES (" + id + ", " + amount + ")");
 			s.close();
 		}
 		catch(SQLException e){

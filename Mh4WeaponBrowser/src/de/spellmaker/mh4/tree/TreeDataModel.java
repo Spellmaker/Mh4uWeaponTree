@@ -62,11 +62,11 @@ public class TreeDataModel implements ElementSelectedListener<TextInBox> {
 				System.out.println("uri opening not supported");
 			}
 		}
-		else if(e.mouseButton == MouseEvent.BUTTON3){
+		/*else if(e.mouseButton == MouseEvent.BUTTON3){
 			TreeLayout<TextInBox> current = stack.peek();
 			stack.push(manager.getReverseTree(current.getTree().getRoot(), e.element));
 			treeView.setTree(stack.peek());
-		}
+		}*/
 	}
 
 	public void back(){

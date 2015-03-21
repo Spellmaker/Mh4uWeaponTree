@@ -28,6 +28,7 @@ import de.spellmaker.mh4.treeview.TreeViewPane;
 @SuppressWarnings("serial")
 public class GUI extends JFrame {
 	private Connection sqlConn;
+	private Connection sqlSave;
 	private WeaponManager manager;
 	private TreeViewPane<TextInBox> treePane;
 	private TreeDataModel model;
@@ -37,13 +38,14 @@ public class GUI extends JFrame {
 		try{
 			Class.forName("org.sqlite.JDBC");
 			sqlConn = DriverManager.getConnection("jdbc:sqlite:data\\database.sqlite");
+			sqlSave = DriverManager.getConnection("jdbc:sqlite:data\\myitems.sqlite");
 		}
 		catch(Exception e){
 			e.printStackTrace();
 			System.exit(0);
 		}
 		System.out.println("Opened connection successfully");
-		manager = new WeaponManager(sqlConn);
+		manager = new WeaponManager(sqlConn, sqlSave);
 		
 		manager.loadAllWeapons();
         treePane = new TreeViewPane<>();

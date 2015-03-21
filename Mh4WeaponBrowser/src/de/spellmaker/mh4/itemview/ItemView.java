@@ -29,8 +29,8 @@ public class ItemView extends JPanel {
         setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         this.manager = manager;
         this.selected = null;
-        create = new CraftPanel("Create");
-        upgrade = new CraftPanel("Upgrade");
+        create = new CraftPanel("Create", manager);
+        upgrade = new CraftPanel("Upgrade", manager);
         this.add(create);
         this.add(upgrade);
         this.add(new JPanel());
