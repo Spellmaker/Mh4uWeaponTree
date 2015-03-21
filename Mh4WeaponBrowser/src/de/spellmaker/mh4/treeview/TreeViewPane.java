@@ -219,7 +219,7 @@ public class TreeViewPane<N> extends JComponent implements MouseListener, MouseM
 		double click_y = world.getY();
 		
 		N sel = nodeAt(click_x, click_y);
-		ElementSelectedEvent<N> event = new ElementSelectedEvent<N>(e.getButton(), selected);
+		ElementSelectedEvent<N> event = new ElementSelectedEvent<N>(e.getButton(), sel);
 		if(selected != null && selected.equals(sel)){
 			for(ElementSelectedListener<N> l : listeners) l.elementDoubleClicked(event);
 		}
@@ -253,6 +253,4 @@ public class TreeViewPane<N> extends JComponent implements MouseListener, MouseM
 		// TODO Auto-generated method stub
 		
 	}
-	
-	
 }

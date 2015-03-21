@@ -20,17 +20,24 @@ import de.spellmaker.mh4.tree.TextInBoxNodeExtentProvider;
 
 
 public class WeaponManager {
-	private Connection conn;
+	private Connection dConn;
+	private Connection sConn;
 	private Map<Integer, WeaponTree> weaponTrees;
 	private List<String> weaponTypes;
 	private int activeTree;
 	private WeaponTree tree;
+	private Map<Integer, CraftData> weaponCreate;
+	private Map<Integer, CraftData> weaponUpgrade;
 	
-	public WeaponManager(Connection c) throws SQLException{
-		this.conn = c;
+	public WeaponManager(Connection dConn, Connection sConn) throws SQLException{
+		this.dConn = dConn;
+		this.sConn = sConn;
 		
 		weaponTrees = new HashMap<Integer, WeaponTree>();
-		Statement s = conn.createStatement();
+		weaponCreate = new HashMap<>();
+		weaponUpgrade = new HashMap<>();
+		
+		Statement s = sConn.createStatement();
 		ResultSet types = s.executeQuery("SELECT id, local_name FROM WeaponType");
 		weaponTypes = new ArrayList<String>();
 		while(types.next()){
@@ -60,17 +67,68 @@ public class WeaponManager {
 	}
 	
 	public void loadAllWeapons() throws SQLException{
-		Statement s = conn.createStatement();
+		Statement s = dConn.createStatement();
 		String query = "SELECT Weapon.*, MAX(Rank.id) FROM Weapon JOIN ItemWeaponPivot ON Weapon.id = ItemWeaponPivot.weapon_id JOIN Items ON ItemWeaponPivot.item_id = Items.id JOIN Rank ON (Items.rarity >= Rank.rarity_lowest AND Items.rarity <= Rank.rarity_highest) GROUP BY Weapon.id";
 		ResultSet allWeapons = s.executeQuery(query);
 		while(allWeapons.next()){
 			Weapon current = new Weapon(allWeapons);
 			weaponTrees.get(current.getWeapontype_id()).putWeapon(current);
 		}
+		s.close();
+		//load crafts
+		s = dConn.createStatement();
+		query = "SELECT ItemWeaponPivot.weapon_id, Items.id, Items.rarity, Items.local_name, ItemWeaponPivot.weaponcrafttype_id, ItemWeaponPivot.quantity FROM Items JOIN ItemWeaponPivot ON Items.id = ItemWeaponPivot.item_id ORDER BY ItemweaponPivot.weapon_id, ItemweaponPivot.weaponcrafttype_id";
+		ResultSet allCrafts = s.executeQuery(query);
+		while(!allCrafts.isAfterLast()){
+			int id = allCrafts.getInt(1);
+			CraftData current = new CraftData(id, allCrafts);
+			if(current.crafttype == 1) 	weaponCreate.put(id, current);
+			else 						weaponUpgrade.put(id, current);
+		}
+	
+	}
+	
+	public int getItemAmount(int id){
+		try{
+			Statement s = sConn.createStatement();
+			ResultSet rs = s.executeQuery("SELECT * FROM Items WHERE Items.id = " + id);
+			if(rs.next()){
+				int res = rs.getInt(2);
+				s.close();
+				return res;
+			}
+			else{
+				s.close();
+				return 0;
+			}
+		}
+		catch(SQLException e){
+			System.out.println("could not fetch save files");
+			return 0;
+		}
+	}
+	
+	public void setItemAmount(int id, int amount){
+		try{
+			Statement s = sConn.createStatement();
+			s.executeUpdate("INSERT OR REPLACE INTO Items (id, amount) VALUES (2, 4)");
+			s.close();
+		}
+		catch(SQLException e){
+			System.out.println("error saving");
+		}
 	}
 	
 	public Weapon getWeapon(int id){
 		return tree.getWeapons().get(id);
+	}
+	
+	public CraftData getCreateCraftData(int id){
+		return weaponCreate.get(id);
+	}
+	
+	public CraftData getUpgradeCraftData(int id){
+		return weaponUpgrade.get(id);
 	}
 	
 	public TreeLayout<TextInBox> getReverseTree(TextInBox start, TextInBox end){

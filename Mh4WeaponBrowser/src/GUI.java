@@ -15,8 +15,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+import javax.swing.border.BevelBorder;
 
 import de.spellmaker.mh4.data.WeaponManager;
+import de.spellmaker.mh4.itemview.ItemView;
 import de.spellmaker.mh4.tree.TextInBox;
 import de.spellmaker.mh4.tree.TreeDataModel;
 import de.spellmaker.mh4.treeview.Mh4NodeDesigner;
@@ -45,8 +47,10 @@ public class GUI extends JFrame {
 		
 		manager.loadAllWeapons();
         treePane = new TreeViewPane<>();
-        treePane.setNodeDesigner(new Mh4NodeDesigner());
-        model = new TreeDataModel(manager, treePane);
+        Mh4NodeDesigner designer = new Mh4NodeDesigner("save.txt");
+        ItemView infoPanel = new ItemView(manager);
+        treePane.setNodeDesigner(designer);
+        model = new TreeDataModel(manager, treePane, designer, infoPanel);
         treePane.setTree(manager.getTree());
         
         Container contentPane = this.getContentPane();
@@ -89,11 +93,13 @@ public class GUI extends JFrame {
 		});
         
         controlPanel.add(comboBox);
-        controlPanel.add(new JLabel("Controls: Drag to pan | Scroll to zoom | Double-Left: View Sub-Tree | Double-Middle: Open Weapon in Browser | Double-Right: View Path to Weapon"));
+        //controlPanel.add(new JLabel("Controls: Drag to pan | Scroll to zoom | Double-Left: View Sub-Tree | Double-Middle: Open Weapon in Browser | Double-Right: View Path to Weapon"));
+        
         
         
         contentPane.add(controlPanel, BorderLayout.NORTH);
         contentPane.add(treePane, BorderLayout.CENTER);
+        contentPane.add(infoPanel, BorderLayout.EAST);
         pack();
         setSize(1600, 900);
         setLocationRelativeTo(null);
