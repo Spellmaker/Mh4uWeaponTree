@@ -1,6 +1,7 @@
 package de.spellmaker.mh4.itemview;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -132,7 +133,12 @@ public class CraftPanel extends JPanel implements ActionListener, MouseListener 
 				else{
 					itemNames[i].setText(c.name);
 					left[i].setVisible(true);
-					myItems[i].setText("" + manager.getItemAmount(c.id));
+					int amt = manager.getItemAmount(c.id);
+					myItems[i].setText("" + amt);
+					if(amt >= c.quantity){
+						myItems[i].setBackground(Color.green);
+						myItems[i].setOpaque(true);
+					}
 					right[i].setVisible(true);
 					neededItems[i].setText("" + c.quantity);
 					items[i] = c;
@@ -147,6 +153,8 @@ public class CraftPanel extends JPanel implements ActionListener, MouseListener 
 			itemNames[i].setText("");
 			left[i].setVisible(false);
 			myItems[i].setText("");
+			myItems[i].setBackground(Color.white);
+			myItems[i].setOpaque(false);
 			right[i].setVisible(false);
 			neededItems[i].setText("");
 			items[i] = null;
@@ -161,8 +169,7 @@ public class CraftPanel extends JPanel implements ActionListener, MouseListener 
 				if(items[i] != null){
 					int amt = manager.getItemAmount(items[i].id);
 					amt = (int) Math.max(0, amt - items[i].quantity);
-					manager.setItemAmount(items[i].id, amt);
-					myItems[i].setText("" + amt);
+					updateAmount(i, amt);
 				}
 			}
 			Weapon currentWeapon = manager.getWeapon(data.weaponId);
@@ -189,8 +196,7 @@ public class CraftPanel extends JPanel implements ActionListener, MouseListener 
 				if(items[i] != null){
 					int amt = manager.getItemAmount(items[i].id);
 					amt = (int) Math.max(0, amt - 1);
-					manager.setItemAmount(items[i].id, amt);
-					myItems[i].setText("" + amt);
+					updateAmount(i, amt);
 				}
 				break;
 			}
@@ -198,8 +204,7 @@ public class CraftPanel extends JPanel implements ActionListener, MouseListener 
 				if(items[i] != null){
 					int amt = manager.getItemAmount(items[i].id);
 					amt += 1;
-					manager.setItemAmount(items[i].id, amt);
-					myItems[i].setText("" + amt);
+					updateAmount(i, amt);
 				}
 				break;
 			}
@@ -224,6 +229,19 @@ public class CraftPanel extends JPanel implements ActionListener, MouseListener 
 		}
 	}
 
+	private void updateAmount(int pos, int amt){
+		manager.setItemAmount(items[pos].id, amt);
+		myItems[pos].setText("" + amt);
+		if(amt >= items[pos].quantity){
+			myItems[pos].setBackground(Color.green);
+			myItems[pos].setOpaque(true);
+		}
+		else{
+			myItems[pos].setBackground(Color.white);
+			myItems[pos].setOpaque(false);
+		}
+	}
+	
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub

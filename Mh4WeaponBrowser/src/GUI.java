@@ -3,8 +3,11 @@ import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -14,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+
 import de.spellmaker.mh4.data.WeaponManager;
 import de.spellmaker.mh4.itemview.ItemView;
 import de.spellmaker.mh4.tree.TextInBox;
@@ -31,6 +35,12 @@ public class GUI extends JFrame {
 	private TreeDataModel model;
 	
 	public GUI() throws Exception{
+		File dbFile = new File("data\\database.sqlite");
+		if(!dbFile.exists()){
+			System.out.println("ERROR: Missing Mh4 Database file. Exiting...");
+			System.exit(0);
+		}
+		
 		sqlConn = null;
 		try{
 			Class.forName("org.sqlite.JDBC");
@@ -41,6 +51,17 @@ public class GUI extends JFrame {
 			e.printStackTrace();
 			System.exit(0);
 		}
+		
+		//test if the save file tables exists
+		Statement testTable = sqlSave.createStatement();
+		ResultSet rs = testTable.executeQuery("SELECT name From sqlite_master WHERE type='table' AND name = 'Items'");
+		if(!rs.next()){
+			Statement createTable = sqlSave.createStatement();
+			createTable.execute("CREATE TABLE 'Items' ('id' INTEGER, 'amount' INTEGER, PRIMARY KEY(id))");
+			createTable.close();
+		}
+		testTable.close();
+		
 		System.out.println("Opened connection successfully");
 		manager = new WeaponManager(sqlConn, sqlSave);
 		
