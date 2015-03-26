@@ -13,6 +13,7 @@ public class WeaponTree {
 	private Map<Integer, List<Weapon>> weaponChildren;
 	private List<Weapon> finalWeapons;
 	private List<Weapon> rootWeapons;
+	private Map<Weapon, Boolean> weaponBuilt;
 	
 	public WeaponTree(int id, String name){
 		this.weaponTypeId = id;
@@ -22,6 +23,7 @@ public class WeaponTree {
 		finalWeapons = new ArrayList<Weapon>();
 		rootWeapons = new ArrayList<Weapon>();
 		weaponChildren = new HashMap<Integer, List<Weapon>>();
+		weaponBuilt = new HashMap<Weapon, Boolean>();
 	}
 	
 	public String getName(){
@@ -32,7 +34,16 @@ public class WeaponTree {
 		return weaponTypeId;
 	}
 	
-	public void putWeapon(Weapon w){
+	public boolean isBuilt(Weapon w){
+		Boolean state = weaponBuilt.get(w);
+		return (state != null) && state;
+	}
+	
+	public void setBuilt(Weapon w, boolean built){
+		weaponBuilt.put(w, built);
+	}
+	
+	public void putWeapon(Weapon w, boolean build){
 		if(w.getWeapontype_id() == weaponTypeId){
 			allWeapons.put(w.getId(), w);
 			if(w.isWeapon_final()){
@@ -49,6 +60,8 @@ public class WeaponTree {
 				}
 				currentList.add(w);
 			}
+			
+			weaponBuilt.put(w, build);
 		}
 	}
 	

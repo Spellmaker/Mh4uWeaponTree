@@ -67,7 +67,7 @@ public class GUI extends JFrame {
 		
 		manager.loadAllWeapons();
         treePane = new TreeViewPane<>();
-        Mh4NodeDesigner designer = new Mh4NodeDesigner("save.txt");
+        Mh4NodeDesigner designer = new Mh4NodeDesigner(manager);
         ItemView infoPanel = new ItemView(manager, designer, treePane);
         treePane.setNodeDesigner(designer);
         model = new TreeDataModel(manager, treePane, designer, infoPanel);

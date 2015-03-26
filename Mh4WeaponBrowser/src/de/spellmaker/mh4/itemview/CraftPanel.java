@@ -176,14 +176,14 @@ public class CraftPanel extends JPanel implements ActionListener, MouseListener 
 			if(currentWeapon.getWeapon_parent_id() > 0 && this.title.getText().equals("Upgrade")){
 				Weapon prevWeapon = manager.getWeapon(currentWeapon.getWeapon_parent_id());
 				try{
-					designer.removeEntry(prevWeapon.getLocal_name());
+					designer.removeEntry(prevWeapon);
 				}
 				catch(Exception exc){
 					System.out.println("error saving to save.txt");
 				}
 			}
 			try{
-				designer.addEntry(currentWeapon.getLocal_name());
+				designer.addEntry(currentWeapon);
 			}
 			catch(Exception exc){
 				System.out.println("error saving to save.txt");

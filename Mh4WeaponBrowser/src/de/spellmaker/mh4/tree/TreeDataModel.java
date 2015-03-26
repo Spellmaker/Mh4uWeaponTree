@@ -45,7 +45,7 @@ public class TreeDataModel implements ElementSelectedListener<TextInBox> {
 	public void elementDoubleClicked(ElementSelectedEvent<TextInBox> e) {
 		if(e.mouseButton == MouseEvent.BUTTON1){
 			try {
-				designer.toggleEntry(e.element.source.getLocal_name());
+				designer.toggleEntry(e.element.source);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}

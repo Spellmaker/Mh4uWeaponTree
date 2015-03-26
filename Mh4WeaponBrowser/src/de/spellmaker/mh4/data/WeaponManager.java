@@ -1,5 +1,10 @@
 package de.spellmaker.mh4.data;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -66,13 +71,87 @@ public class WeaponManager {
 		return Collections.unmodifiableList(weaponTypes);
 	}
 	
+	private void importSaves() throws SQLException{
+		Statement s = sConn.createStatement();
+		ResultSet rs = s.executeQuery("SELECT name From sqlite_master WHERE type='table' AND name = 'BuildList'");
+		boolean load = false;
+		
+		if(!rs.next()){
+			load = true;
+		}
+		s.close();
+		
+		if(load){
+			System.out.println("BuildList not found in save database, creating it");
+			s = sConn.createStatement();
+			s.execute("CREATE TABLE 'BuildList' ('weaponId' INTEGER, PRIMARY KEY(weaponId))");
+			
+			File saveFile = new File("save.txt");
+			if(saveFile.exists()){
+				try{
+					System.out.println("importing legacy save file into database");
+					String sql = "SELECT Weapon.id, Weapon.local_name FROM Weapon WHERE ";
+					
+					boolean first = true;
+					
+					BufferedReader br = new BufferedReader(new FileReader(saveFile));
+					
+					while(br.ready()){
+						String tmp = br.readLine();
+						if(tmp.equals("")) continue;
+						if(first) first = false;
+						else sql += " OR ";
+						sql += "Weapon.local_name = '" + tmp + "'";
+					}
+					
+					br.close();
+					if(!first){
+						System.out.println(sql);
+						
+						Statement search = dConn.createStatement();
+						ResultSet searchResult = search.executeQuery(sql);
+						sql = "";
+						PreparedStatement ps = sConn.prepareStatement("INSERT INTO BuildList (weaponId) VALUES (?)");
+						
+						while(searchResult.next()){
+							ps.setInt(1, searchResult.getInt(1));
+							ps.executeUpdate();
+							//sql += "INSERT INTO BuildList (weaponId) VALUES (" + searchResult.getInt(1) + ");";
+						}
+						search.close();
+						ps.close();
+						//System.out.println(sql);
+						//s = sConn.createStatement();
+						//s.execute(sql);
+						s.close();
+					}
+					
+					System.out.println("successfully converted save file");
+				}
+				catch(IOException e){
+					System.out.println("reading save file failed");
+				}
+			}
+		}
+	}
+	
 	public void loadAllWeapons() throws SQLException{
+		importSaves();
+		
+		Statement build = sConn.createStatement();
+		ResultSet buildWeapons = build.executeQuery("SELECT * FROM BuildList");
+		Map<Integer, Boolean> buildMap = new HashMap<Integer, Boolean>();
+		while(buildWeapons.next()){
+			buildMap.put(buildWeapons.getInt(1), true);
+		}
+		build.close();
+		
 		Statement s = dConn.createStatement();
 		String query = "SELECT Weapon.*, MAX(Rank.id) FROM Weapon JOIN ItemWeaponPivot ON Weapon.id = ItemWeaponPivot.weapon_id JOIN Items ON ItemWeaponPivot.item_id = Items.id JOIN Rank ON (Items.rarity >= Rank.rarity_lowest AND Items.rarity <= Rank.rarity_highest) GROUP BY Weapon.id";
 		ResultSet allWeapons = s.executeQuery(query);
 		while(allWeapons.next()){
 			Weapon current = new Weapon(allWeapons);
-			weaponTrees.get(current.getWeapontype_id()).putWeapon(current);
+			weaponTrees.get(current.getWeapontype_id()).putWeapon(current, buildMap.get(current.getId()) != null);
 		}
 		s.close();
 		//load crafts
@@ -86,6 +165,32 @@ public class WeaponManager {
 			else 						weaponUpgrade.put(id, current);
 		}
 	
+	}
+	
+	public boolean isBuilt(Weapon w){
+		return tree.isBuilt(w);
+	}
+	
+	public void setBuilt(Weapon w, boolean val){
+		//find weapon tree
+		WeaponTree resp = weaponTrees.get(w.getWeapontype_id());
+		if(resp.isBuilt(w) != val){
+			try{
+				Statement s = sConn.createStatement();
+				if(val)  {
+					s.execute("INSERT INTO BuildList (weaponId) VALUES (" + w.getId() + ")");
+				}
+				else{
+					s.execute("REMOVE FROM BuildList WHERE BuildList.weaponId = " + w.getId());
+				}
+				s.close();
+				
+				resp.setBuilt(w, val);
+			}
+			catch(SQLException e){
+				System.out.println("error: database access failed");
+			}
+		}
 	}
 	
 	public int getItemAmount(int id){
