@@ -101,7 +101,7 @@ public class WeaponManager {
 						if(tmp.equals("")) continue;
 						if(first) first = false;
 						else sql += " OR ";
-						sql += "Weapon.local_name = '" + tmp + "'";
+						sql += "Weapon.local_name = '" + tmp.replace("'", "''") + "'";
 					}
 					
 					br.close();
