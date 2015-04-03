@@ -19,4 +19,15 @@ public class CraftData {
 			pos++;
 		}while(set.next());
 	}
+	
+	public boolean enoughItems(WeaponManager manager){
+		for(Item i : items){
+			if(i != null){
+				if(manager.getItemAmount(i.id) < i.quantity){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 }
