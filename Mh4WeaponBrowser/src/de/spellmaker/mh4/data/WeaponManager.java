@@ -181,7 +181,7 @@ public class WeaponManager {
 					s.execute("INSERT INTO BuildList (weaponId) VALUES (" + w.getId() + ")");
 				}
 				else{
-					s.execute("REMOVE FROM BuildList WHERE BuildList.weaponId = " + w.getId());
+					s.execute("DELETE FROM BuildList WHERE BuildList.weaponId = " + w.getId());
 				}
 				s.close();
 				
@@ -189,6 +189,7 @@ public class WeaponManager {
 			}
 			catch(SQLException e){
 				System.out.println("error: database access failed");
+				e.printStackTrace();
 			}
 		}
 	}
