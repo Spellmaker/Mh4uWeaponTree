@@ -21,12 +21,13 @@ import javax.swing.JPanel;
 
 import de.spellmaker.mh4.data.CraftData;
 import de.spellmaker.mh4.data.Item;
+import de.spellmaker.mh4.data.ItemListener;
 import de.spellmaker.mh4.data.Weapon;
 import de.spellmaker.mh4.data.WeaponManager;
 import de.spellmaker.mh4.treeview.Mh4NodeDesigner;
 
 @SuppressWarnings("serial")
-public class CraftPanel extends JPanel implements ActionListener, MouseListener {
+public class CraftPanel extends JPanel implements ActionListener, MouseListener, ItemListener {
 	private JLabel title;
 	private JPanel body;
 	private JLabel[] itemNames;
@@ -66,6 +67,8 @@ public class CraftPanel extends JPanel implements ActionListener, MouseListener 
 		this.myItems = new JLabel[4];
 		this.right = new JButton[4];
 		this.neededItems = new JLabel[4];
+		
+		manager.addListener(this);
 		
 		this.items = new Item[4];
 		
@@ -264,5 +267,23 @@ public class CraftPanel extends JPanel implements ActionListener, MouseListener 
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void itemChanged(int id) {
+		for(int i = 0; i < 4; i++){
+			if(data.items[i].id == id){
+				int amt = manager.getItemAmount(id);
+				myItems[i].setText("" + amt);
+				if(amt >= items[i].quantity){
+					myItems[i].setBackground(Color.green);
+					myItems[i].setOpaque(true);
+				}
+				else{
+					myItems[i].setBackground(Color.white);
+					myItems[i].setOpaque(false);
+				}
+			}
+		}
 	}
 }

@@ -11,6 +11,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -34,6 +36,8 @@ public class WeaponManager {
 	private Map<Integer, CraftData> weaponCreate;
 	private Map<Integer, CraftData> weaponUpgrade;
 	
+	private List<ItemListener> listeners;
+	
 	public WeaponManager(Connection dConn, Connection sConn) throws SQLException{
 		this.dConn = dConn;
 		this.sConn = sConn;
@@ -52,6 +56,8 @@ public class WeaponManager {
 			weaponTypes.add(typeName);
 		}
 		
+		listeners = new LinkedList<ItemListener>();
+		
 		activeTree = 1;
 		tree = weaponTrees.get(activeTree);
 	}
@@ -69,6 +75,10 @@ public class WeaponManager {
 	
 	public List<String> getWeaponTypes(){
 		return Collections.unmodifiableList(weaponTypes);
+	}
+	
+	public void addListener(ItemListener l){
+		this.listeners.add(l);
 	}
 	
 	private void importSaves() throws SQLException{
@@ -219,6 +229,10 @@ public class WeaponManager {
 			Statement s = sConn.createStatement();
 			s.executeUpdate("INSERT OR REPLACE INTO Items (id, amount) VALUES (" + id + ", " + amount + ")");
 			s.close();
+			
+			for(Iterator<ItemListener> it = listeners.iterator(); it.hasNext(); ){
+				it.next().itemChanged(id);
+			}
 		}
 		catch(SQLException e){
 			System.out.println("error saving");
