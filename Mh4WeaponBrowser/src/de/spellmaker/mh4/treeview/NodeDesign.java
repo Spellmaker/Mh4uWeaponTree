@@ -8,12 +8,14 @@ public class NodeDesign {
 	public final int LINE_WIDTH;
 	public final Color TEXT_COLOR;
 	public final int ARC_SIZE;
+	public final boolean DISPLAY;
 	
-	public NodeDesign(Color boxcolor, Color linecolor, int linewidth, Color textcolor, int arcsize){
+	public NodeDesign(Color boxcolor, Color linecolor, int linewidth, Color textcolor, int arcsize, boolean display){
 		BOX_COLOR = boxcolor;
 		LINE_COLOR = linecolor;
 		LINE_WIDTH = linewidth;
 		TEXT_COLOR = textcolor;
 		ARC_SIZE = arcsize;
+		DISPLAY = display;
 	}
 }

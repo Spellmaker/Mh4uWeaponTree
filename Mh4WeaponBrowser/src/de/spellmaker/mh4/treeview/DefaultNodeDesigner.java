@@ -7,9 +7,9 @@ public class DefaultNodeDesigner<N> implements NodeDesigner<N> {
 	@Override
 	public NodeDesign getNodeDesign(N node, boolean selected) {
 		if(selected)
-			return new NodeDesign(Color.red, Color.black, 1, Color.black, 10);
+			return new NodeDesign(Color.red, Color.black, 1, Color.black, 10, true);
 		else
-			return new NodeDesign(Color.orange, Color.black, 1, Color.black, 10);
+			return new NodeDesign(Color.orange, Color.black, 1, Color.black, 10, true);
 	}
 
 	@Override

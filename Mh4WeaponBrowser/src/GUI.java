@@ -3,6 +3,8 @@ import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,6 +13,7 @@ import java.sql.Statement;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -114,7 +117,17 @@ public class GUI extends JFrame {
         
         controlPanel.add(comboBox);
         //controlPanel.add(new JLabel("Controls: Drag to pan | Scroll to zoom | Double-Left: View Sub-Tree | Double-Middle: Open Weapon in Browser | Double-Right: View Path to Weapon"));
-        
+        JCheckBox checkBox = new JCheckBox();
+        checkBox.setText("Display all weapons");
+        checkBox.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				designer.displayAll(e.getStateChange() != ItemEvent.DESELECTED);
+				treePane.repaint();
+			}
+		});
+        controlPanel.add(checkBox);
         
         
         contentPane.add(controlPanel, BorderLayout.NORTH);

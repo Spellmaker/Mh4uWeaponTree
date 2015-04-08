@@ -288,6 +288,10 @@ public class WeaponManager {
 		return getTree(null);
 	}
 	
+	public List<Weapon> getChildren(Weapon w){
+		return tree.getChildren(w.getId());
+	}
+	
 	public TreeLayout<TextInBox> getTree(TextInBox start){
 		DefaultTreeForTreeLayout<TextInBox> resultTree = null;
 		if(start == null){

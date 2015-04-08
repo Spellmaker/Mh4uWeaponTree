@@ -144,34 +144,36 @@ public class TreeViewPane<N> extends JComponent implements MouseListener, MouseM
 	
 	private void paintBox(Graphics2D g, N n){
 		NodeDesign design = nodeDesigner.getNodeDesign(n, selected != null && selected.equals(n));
-		g.setColor(design.BOX_COLOR);
-		
-		Rectangle2D.Double box = tree.getNodeBounds().get(n);
-        g.fillRoundRect((int) box.x, (int) box.y, (int) box.width - 1,
-                        (int) box.height - 1, design.ARC_SIZE, design.ARC_SIZE);
-        Stroke o = g.getStroke();
-        g.setStroke(new BasicStroke(design.LINE_WIDTH));
-        g.setColor(design.LINE_COLOR);
-        
-        g.drawRoundRect((int) box.x, (int) box.y, (int) box.width - 1,
-                        (int) box.height - 1, design.ARC_SIZE, design.ARC_SIZE);
-        
-        g.setStroke(o);
-        // draw the text on top of the box (possibly multiple lines)
-        g.setColor(design.TEXT_COLOR);
-        String nodeText = n.toString();
-        String[] lines = nodeText.split("\n");
-        FontMetrics m = getFontMetrics(getFont());
-        
-        double center = box.x + box.width / 2;
-        center = center - m.stringWidth(nodeText) / 2;
-   
-        int x = (int) center;
-        int y = (int) box.y + m.getAscent() + m.getLeading() + 1;
-        for (int i = 0; i < lines.length; i++) {
-                g.drawString(lines[i], x, y);
-                y += m.getHeight();
-        }
+		if(design.DISPLAY){
+			g.setColor(design.BOX_COLOR);
+			
+			Rectangle2D.Double box = tree.getNodeBounds().get(n);
+	        g.fillRoundRect((int) box.x, (int) box.y, (int) box.width - 1,
+	                        (int) box.height - 1, design.ARC_SIZE, design.ARC_SIZE);
+	        Stroke o = g.getStroke();
+	        g.setStroke(new BasicStroke(design.LINE_WIDTH));
+	        g.setColor(design.LINE_COLOR);
+	        
+	        g.drawRoundRect((int) box.x, (int) box.y, (int) box.width - 1,
+	                        (int) box.height - 1, design.ARC_SIZE, design.ARC_SIZE);
+	        
+	        g.setStroke(o);
+	        // draw the text on top of the box (possibly multiple lines)
+	        g.setColor(design.TEXT_COLOR);
+	        String nodeText = n.toString();
+	        String[] lines = nodeText.split("\n");
+	        FontMetrics m = getFontMetrics(getFont());
+	        
+	        double center = box.x + box.width / 2;
+	        center = center - m.stringWidth(nodeText) / 2;
+	   
+	        int x = (int) center;
+	        int y = (int) box.y + m.getAscent() + m.getLeading() + 1;
+	        for (int i = 0; i < lines.length; i++) {
+	                g.drawString(lines[i], x, y);
+	                y += m.getHeight();
+	        }
+		}
 	}
 	
 	
