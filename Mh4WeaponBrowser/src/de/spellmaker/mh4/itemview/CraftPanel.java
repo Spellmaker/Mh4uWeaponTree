@@ -272,7 +272,7 @@ public class CraftPanel extends JPanel implements ActionListener, MouseListener,
 	@Override
 	public void itemChanged(int id) {
 		for(int i = 0; i < 4; i++){
-			if(data.items[i].id == id){
+			if(data != null && data.items[i] != null && data.items[i].id == id){
 				int amt = manager.getItemAmount(id);
 				myItems[i].setText("" + amt);
 				if(amt >= items[i].quantity){
